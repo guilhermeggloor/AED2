@@ -33,6 +33,7 @@ int main() {
                 interface_lista_dupla();
                 break;
             case 4:
+                interface_fila();
                 break;
             case 5:
                 
@@ -193,6 +194,50 @@ void interface_lista_dupla() {
                 break;
             case 4:
                 imprimir_lista_dupla(lista_dupla);
+                break;
+            case 0:
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    }
+}
+
+void interface_fila(void) {
+    int opcao_operacao = -1;
+    static Fila* fila = NULL;
+    if (fila == NULL) {
+        fila = criar_fila();
+    }
+
+    while (opcao_operacao != 0) {
+        printf("\n--- Fila (FIFO) ---\n");
+        printf("1. Inserir\n");
+        printf("2. Remover\n");
+        printf("3. Mostrar fila\n");
+        printf("0. Voltar\n");
+        printf("Escolha uma operação: ");
+        scanf("%d", &opcao_operacao);
+
+        switch (opcao_operacao) {
+            case 1: {
+                int valor;
+                printf("Digite o valor a ser inserido: ");
+                scanf("%d", &valor);
+                inserir_fila(fila, valor);
+                break;
+            }
+            case 2: {
+                int removido = remover_fila(fila);
+                if (removido == -1) {
+                    printf("Fila vazia, nada a remover.\n");
+                } else {
+                    printf("Valor removido: %d\n", removido);
+                }
+                break;
+            }
+            case 3:
+                imprimir_fila(fila);
                 break;
             case 0:
                 break;
