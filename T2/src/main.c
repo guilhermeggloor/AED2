@@ -30,10 +30,9 @@ int main() {
                 interface_lista_circular();
                 break;
             case 3:
-                
+                interface_lista_dupla();
                 break;
             case 4:
-                
                 break;
             case 5:
                 
@@ -149,3 +148,56 @@ void interface_lista_circular() {
     }
 }
 
+void interface_lista_dupla() {
+    int opcao_operacao = -1;
+    static NoDuplo* lista_dupla = NULL;
+    if(lista_dupla == NULL) {
+        lista_dupla = criar_lista_dupla();
+    }
+
+    while (opcao_operacao != 0) {
+        printf("\n--- Lista duplamente encadeada ---\n");
+        printf("1. Buscar\n");
+        printf("2. Inserir\n");
+        printf("3. Remover\n");
+        printf("4. Mostrar lista\n");
+        printf("0. Voltar\n");
+        printf("Escolha uma operação: ");
+        scanf("%d", &opcao_operacao);
+
+        switch (opcao_operacao) {
+            case 1: {
+                int valor;
+                printf("Digite o valor a ser buscado: ");
+                scanf("%d", &valor);
+                NoDuplo* resultado = buscar_dupla(lista_dupla, valor);
+                if (resultado) {
+                    printf("Valor %d encontrado.\n", valor);
+                } else {
+                    printf("Valor %d não encontrado.\n", valor);
+                }
+                break;
+            }
+            case 2: {
+                int valor;
+                printf("Digite o valor a ser inserido: ");
+                scanf("%d", &valor);
+                inserir_dupla(lista_dupla, valor);
+                break;
+            }
+            case 3:
+                int valor;
+                printf("Digite o valor a ser removido: ");
+                scanf("%d", &valor);
+                remover_duplo(lista_dupla, valor);
+                break;
+            case 4:
+                imprimir_lista_dupla(lista_dupla);
+                break;
+            case 0:
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    }
+}
