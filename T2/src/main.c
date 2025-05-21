@@ -27,7 +27,7 @@ int main() {
                 interface_lista_simples(); 
                 break;
             case 2:
-                
+                interface_lista_circular();
                 break;
             case 3:
                 
@@ -89,6 +89,57 @@ void interface_lista_simples() {
                 break;
             case 4:
                 imprimir_lista_simples(lista_simples);
+                break;
+            case 0:
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    }
+}
+
+void interface_lista_circular() {
+    int opcao_operacao = -1;
+    static NoCircular* lista_circular = NULL;
+
+    while (opcao_operacao != 0) {
+        printf("\n--- Lista circular simplesmente encadeada ---\n");
+        printf("1. Buscar\n");
+        printf("2. Inserir\n");
+        printf("3. Remover\n");
+        printf("4. Mostrar lista\n");
+        printf("0. Voltar\n");
+        printf("Escolha uma operação: ");
+        scanf("%d", &opcao_operacao);
+
+        switch (opcao_operacao) {
+            case 1: {
+                int valor;
+                printf("Digite o valor a ser buscado: ");
+                scanf("%d", &valor);
+                NoCircular* resultado = buscar_circular(lista_circular, valor);
+                if (resultado) {
+                    printf("Valor %d encontrado.\n", valor);
+                } else {
+                    printf("Valor %d não encontrado.\n", valor);
+                }
+                break;
+            }
+            case 2: {
+                int valor;
+                printf("Digite o valor a ser inserido: ");
+                scanf("%d", &valor);
+                lista_circular = inserir_ordenado_circular(lista_circular, valor);
+                break;
+            }
+            case 3:
+                int valor;
+                printf("Digite o valor a ser removido: ");
+                scanf("%d", &valor);
+                lista_circular = remover_circular(lista_circular, valor);
+                break;
+            case 4:
+                imprimir_lista_circular(lista_circular);
                 break;
             case 0:
                 break;
