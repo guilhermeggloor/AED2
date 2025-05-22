@@ -80,3 +80,11 @@ void imprimir_lista_simples(No* inicio) {
     }
     printf("NULL\n");
 }
+
+void destruir_lista_simples(No* lista) {
+    while(lista) {
+        No* temp = lista;
+        lista = lista->prox;
+        free(temp);
+    }
+}

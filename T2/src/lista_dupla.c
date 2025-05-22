@@ -57,3 +57,14 @@ void imprimir_lista_dupla(NoDuplo* cabeca) {
         printf("Lista vazia.\n");  
     }
 }
+
+void destruir_lista_dupla(NoDuplo* cabeca) {
+    if (!cabeca) return;
+    NoDuplo* atual = cabeca->prox;
+    while (atual != cabeca) {
+        NoDuplo* temp = atual;
+        atual = atual->prox;
+        free(temp);
+    }
+    free(cabeca);
+}

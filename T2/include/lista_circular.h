@@ -12,6 +12,7 @@ NoCircular* remover_circular(NoCircular* lista, int valor);
 NoCircular* buscar_circular(NoCircular* lista, int valor);
 void imprimir_lista_circular(NoCircular* lista);
 void interface_lista_circular(void);
+void destruir_lista_circular(NoCircular* lista);
 
 
 #endif

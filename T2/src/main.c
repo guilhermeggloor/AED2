@@ -8,6 +8,12 @@
 #include "fila.h"
 #include "pilha.h"
 
+No* lista_simples = NULL;
+NoCircular* lista_circular = NULL;
+NoDuplo* lista_dupla = NULL;
+Fila* fila = NULL;
+Pilha* pilha = NULL;
+
 int main() {
     int estrutura = -1;
 
@@ -36,10 +42,15 @@ int main() {
                 interface_fila();
                 break;
             case 5:
-                
+                interface_pilha();
                 break;
             case 0:
-                printf("Encerrando o programa.\n");
+                destruir_lista_simples(lista_simples);
+                destruir_lista_circular(lista_circular);
+                destruir_lista_dupla(lista_dupla);
+                destruir_fila(fila);
+                destruir_pilha(pilha);
+                printf("Encerrando programa....\n");
                 return 0;
             default:
                 printf("Opção inválida.\n");
@@ -49,7 +60,6 @@ int main() {
 
 void interface_lista_simples() {
     int opcao_operacao = -1;
-    static No* lista_simples = NULL;
 
     while (opcao_operacao != 0) {
         printf("\n--- Lista simplesmente encadeada ---\n");
@@ -100,7 +110,6 @@ void interface_lista_simples() {
 
 void interface_lista_circular() {
     int opcao_operacao = -1;
-    static NoCircular* lista_circular = NULL;
 
     while (opcao_operacao != 0) {
         printf("\n--- Lista circular simplesmente encadeada ---\n");
@@ -151,7 +160,7 @@ void interface_lista_circular() {
 
 void interface_lista_dupla() {
     int opcao_operacao = -1;
-    static NoDuplo* lista_dupla = NULL;
+
     if(lista_dupla == NULL) {
         lista_dupla = criar_lista_dupla();
     }
@@ -205,7 +214,7 @@ void interface_lista_dupla() {
 
 void interface_fila(void) {
     int opcao_operacao = -1;
-    static Fila* fila = NULL;
+
     if (fila == NULL) {
         fila = criar_fila();
     }
@@ -238,6 +247,49 @@ void interface_fila(void) {
             }
             case 3:
                 imprimir_fila(fila);
+                break;
+            case 0:
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    }
+}
+
+void interface_pilha(void) {
+    int opcao_operacao = -1;
+    if (pilha == NULL) {
+        pilha = criar_pilha();
+    }
+
+    while (opcao_operacao != 0) {
+        printf("\n--- Pilha (LIFO) ---\n");
+        printf("1. Inserir\n");
+        printf("2. Remover\n");
+        printf("3. Mostrar pilha\n");
+        printf("0. Voltar\n");
+        printf("Escolha uma operação: ");
+        scanf("%d", &opcao_operacao);
+
+        switch (opcao_operacao) {
+            case 1: {
+                int valor;
+                printf("Digite o valor a ser inserido: ");
+                scanf("%d", &valor);
+                inserir_pilha(pilha, valor);
+                break;
+            }
+            case 2: {
+                int removido = remover_pilha(pilha);
+                if (removido == -1) {
+                    printf("Pilha vazia, nada a remover.\n");
+                } else {
+                    printf("Valor removido: %d\n", removido);
+                }
+                break;
+            }
+            case 3:
+                imprimir_pilha(pilha);
                 break;
             case 0:
                 break;

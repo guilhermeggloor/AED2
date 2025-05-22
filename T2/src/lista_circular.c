@@ -83,3 +83,16 @@ void imprimir_lista_circular(NoCircular* lista) {
     } while (atual != lista);
     printf("\n");
 }
+
+void destruir_lista_circular(NoCircular* lista) {
+    if(!lista) return;
+    NoCircular* inicio = lista;
+    NoCircular* atual = lista->prox;
+    while(atual != inicio) {
+        NoCircular* temp = atual;
+        atual = atual->prox;
+        free(temp);
+    }
+    free(inicio);
+}
+
