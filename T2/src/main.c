@@ -45,11 +45,26 @@ int main() {
                 interface_pilha();
                 break;
             case 0:
-                destruir_lista_simples(lista_simples);
-                destruir_lista_circular(lista_circular);
-                destruir_lista_dupla(lista_dupla);
-                destruir_fila(fila);
-                destruir_pilha(pilha);
+                if (lista_simples != NULL) {
+                 destruir_lista_simples(lista_simples);
+                 lista_simples = NULL;
+                }
+                if (lista_circular != NULL) {
+                    destruir_lista_circular(lista_circular);
+                    lista_circular = NULL;
+                }
+                if (lista_dupla != NULL) {
+                    destruir_lista_dupla(lista_dupla);
+                    lista_dupla = NULL;
+                }
+                if (fila != NULL) {
+                    destruir_fila(fila);
+                    fila = NULL;
+                }
+                if (pilha != NULL) {
+                    destruir_pilha(pilha);
+                    pilha = NULL;
+            }
                 printf("Encerrando programa....\n");
                 return 0;
             default:
