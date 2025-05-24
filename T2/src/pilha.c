@@ -8,6 +8,7 @@ Pilha* criar_pilha(void) {
     return pilha;
 }
 
+// procedimento inserir
 void inserir_pilha(Pilha* pilha, int valor) {
     NoPilha* novo = (NoPilha*)malloc(sizeof(NoPilha));
     novo->valor = valor;
@@ -15,6 +16,7 @@ void inserir_pilha(Pilha* pilha, int valor) {
     pilha->topo = novo;
 }
 
+//procedimento remover
 int remover_pilha(Pilha* pilha) {
     if (!pilha->topo) return -1; // Pilha vazia
     NoPilha* temp = pilha->topo;
@@ -24,6 +26,7 @@ int remover_pilha(Pilha* pilha) {
     return valor;
 }
 
+// função de impressão
 void imprimir_pilha(Pilha* pilha) {
     NoPilha* atual = pilha->topo;
     printf("Topo\n");
@@ -34,6 +37,7 @@ void imprimir_pilha(Pilha* pilha) {
     printf("Base\n");
 }
 
+// desaloca
 void destruir_pilha(Pilha* pilha) {
     while (pilha->topo) {
         remover_pilha(pilha);

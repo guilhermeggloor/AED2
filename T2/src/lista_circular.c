@@ -16,13 +16,13 @@ NoCircular* inserir_ordenado_circular(NoCircular* lista, int valor) {
         atual = atual->prox;
     } while (atual != lista);
 
-    if (!anterior) { // Inserir antes do primeiro (novo menor)
-        // Encontrar o último nó para atualizar o ponteiro
+    if (!anterior) { 
+        // Inserir antes do primeiro (novo menor)
         NoCircular* ultimo = lista;
         while (ultimo->prox != lista) ultimo = ultimo->prox;
         novo->prox = lista;
         ultimo->prox = novo;
-        return novo; // novo passa a ser o primeiro
+        return novo; // novo passa a ser o primeiro elemento da lista
     } else {
         anterior->prox = novo;
         novo->prox = atual;
@@ -46,7 +46,7 @@ NoCircular* remover_circular(NoCircular* lista, int valor) {
         return NULL; // Lista ficou vazia
     }
 
-    if (atual == lista) { // Remover o primeiro
+    if (atual == lista) { // Remover o primeiro elemento
         NoCircular* ultimo = lista;
         while (ultimo->prox != lista) ultimo = ultimo->prox;
         ultimo->prox = lista->prox;
@@ -60,6 +60,7 @@ NoCircular* remover_circular(NoCircular* lista, int valor) {
     }
 }
 
+//procedimento busca
 NoCircular* buscar_circular(NoCircular* lista, int valor) {
     if (!lista) return NULL;
     NoCircular* atual = lista;
@@ -70,6 +71,7 @@ NoCircular* buscar_circular(NoCircular* lista, int valor) {
     return NULL;
 }
 
+//função de impressão
 void imprimir_lista_circular(NoCircular* lista) {
     if (!lista) {
         printf("Lista vazia.\n");
@@ -84,6 +86,7 @@ void imprimir_lista_circular(NoCircular* lista) {
     printf("\n");
 }
 
+//função de desaloca
 void destruir_lista_circular(NoCircular* lista) {
     if(!lista) return;
     NoCircular* inicio = lista;

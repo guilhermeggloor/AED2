@@ -9,6 +9,7 @@ NoDuplo* criar_lista_dupla(void) {
     return cabeca;
 }
 
+// procedimento inserir da lista dupla
 void inserir_dupla(NoDuplo* cabeca, int valor) {
     NoDuplo* novo = (NoDuplo*)malloc(sizeof(NoDuplo));
     novo->valor = valor;
@@ -18,6 +19,7 @@ void inserir_dupla(NoDuplo* cabeca, int valor) {
     cabeca->ant = novo;
 }
 
+// procedimento remover da lista dupla
 void remover_duplo(NoDuplo* cabeca, int valor) {
     NoDuplo* atual = cabeca->prox;
     while (atual != cabeca) {
@@ -31,6 +33,7 @@ void remover_duplo(NoDuplo* cabeca, int valor) {
     }
 }
 
+// Procedimento de busca
 NoDuplo* buscar_dupla(NoDuplo* cabeca, int valor) {
     NoDuplo* atual = cabeca->prox;
     while (atual != cabeca) {
@@ -49,7 +52,7 @@ void imprimir_lista_dupla(NoDuplo* cabeca) {
     }
     printf("\n");
 
-    //Mostrar inicio e fim
+    //Mostrar o inicio e fim da lista dupla
     if(cabeca->prox != cabeca) {
         printf("Inicio: [%d]\n", cabeca->prox->valor);
         printf("Fim: [%d]\n", cabeca->ant->valor);
@@ -58,6 +61,7 @@ void imprimir_lista_dupla(NoDuplo* cabeca) {
     }
 }
 
+//desaloca
 void destruir_lista_dupla(NoDuplo* cabeca) {
     if (!cabeca) return;
     NoDuplo* atual = cabeca->prox;

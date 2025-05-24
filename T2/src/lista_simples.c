@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "lista_simples.h"
 
+//procedimento de busca
 No* buscar(No* inicio, int valor) {
     No* atual = inicio;
 
@@ -12,7 +13,7 @@ No* buscar(No* inicio, int valor) {
         atual = atual->prox;
     }
 
-    return NULL; // Não encontrado
+    return NULL; // retorna nulo se não encontrado
 }
 
 No* inserir_ordenado(No* inicio, int valor) {
@@ -25,7 +26,7 @@ No* inserir_ordenado(No* inicio, int valor) {
     novo->valor = valor;
     novo->prox = NULL;
 
-    // Caso especial: lista vazia ou valor menor que o primeiro
+    // verifica se ou é igual a vazia ou menor que o primeiro elemento (anterior inserido já)
     if (inicio == NULL || valor < inicio->valor) {
         novo->prox = inicio;
         return novo; // novo se torna o primeiro
@@ -65,7 +66,7 @@ No* remover(No* lista, int valor) {
         }
     }
 
-    // Valor não encontrado, retorna a lista original
+    // se valor não encontrado, retorna a lista original
     return lista;
 }
 
@@ -81,6 +82,7 @@ void imprimir_lista_simples(No* inicio) {
     printf("NULL\n");
 }
 
+// função para desalocar a lista simples
 void destruir_lista_simples(No* lista) {
     while(lista) {
         No* temp = lista;

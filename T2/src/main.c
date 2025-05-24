@@ -8,6 +8,7 @@
 #include "fila.h"
 #include "pilha.h"
 
+// iniciar como nulo
 No* lista_simples = NULL;
 NoCircular* lista_circular = NULL;
 NoDuplo* lista_dupla = NULL;
@@ -45,7 +46,8 @@ int main() {
                 interface_pilha();
                 break;
             case 0:
-                if (lista_simples != NULL) {
+                // Verificar se é diferente de nulo e Desalocar todas as estruturas antes de sair
+                if (lista_simples != NULL) {    
                  destruir_lista_simples(lista_simples);
                  lista_simples = NULL;
                 }
@@ -74,8 +76,10 @@ int main() {
 }
 
 void interface_lista_simples() {
+    
     int opcao_operacao = -1;
 
+    // interface para operação das listas (vai ser replicada para as outras estruturas)
     while (opcao_operacao != 0) {
         printf("\n--- Lista simplesmente encadeada ---\n");
         printf("1. Buscar\n");
