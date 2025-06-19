@@ -1,72 +1,92 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "lista_simples.h"
 
-//implementar Lista simplesmente encadeada sem nó cabeça ordenada: busca, inserção e remoção ;
+//procedimento de busca
+No* buscar(No* inicio, int valor) {
+    No* atual = inicio;
 
-struct s_no
-{
-    int info;
-    struct s_no *prox;
-};
-struct s_no *busca(int x, struct s_no *ptlista)
-{
-    struct s_no *p;
-    p = ptlista;
-    while (p != NULL && p->info != x)
-    {
-        p = p->prox;
+    while (atual != NULL && atual->valor <= valor) {
+        if (atual->valor == valor) {
+            return atual;
+        }
+        atual = atual->prox;
     }
-    return p;
+
+    return NULL; // retorna nulo se não encontrado
 }
 
-void insereListaOrdenadasemNo(struct s_no **ptlista, int x)
-{
-    struct s_no *p, *ant, *novo;
-    novo = (struct s_no *)malloc(sizeof(struct s_no));
-    novo->info = x;
-    ant = NULL;
-    p = *ptlista;
-
-    while (p != NULL && p->info < x)
-    {
-        ant = p;
-        p = p->prox;
+No* inserir_ordenado(No* inicio, int valor) {
+    No* novo = malloc(sizeof(No));
+    if (!novo) {
+        printf("Erro de alocação.\n");
+        return inicio;
     }
 
-    if (ant == NULL)
-    {
-        novo->prox = *ptlista;
-        *ptlista = novo;
+    novo->valor = valor;
+    novo->prox = NULL;
+
+    // verifica se ou é igual a vazia ou menor que o primeiro elemento (anterior inserido já)
+    if (inicio == NULL || valor < inicio->valor) {
+        novo->prox = inicio;
+        return novo; // novo se torna o primeiro
     }
-    else
-    {
-        novo->prox = ant->prox;
-        ant->prox = novo;
+
+    // Inserção no meio ou final
+    No* atual = inicio;
+    while (atual->prox != NULL && atual->prox->valor < valor) {
+        atual = atual->prox;
     }
+
+    novo->prox = atual->prox;
+    atual->prox = novo;
+
+    return inicio;
 }
 
-void removeListaOrdenadasemNo(struct s_no **ptlista, int x)
-{
-    struct s_no *p, *ant;
-    ant = NULL;
-    p = *ptlista;
+No* remover(No* lista, int valor) {
+    No* atual = lista;
+    No* anterior = NULL;
 
-    while (p != NULL && p->info < x)
-    {
-        ant = p;
-        p = p->prox;
+    while (atual != NULL && atual->valor < valor) {
+        anterior = atual;
+        atual = atual->prox;
     }
 
-    if (p != NULL && p->info == x)
-    {
-        if (ant == NULL)
-        {
-            *ptlista = p->prox;
+    if (atual != NULL && atual->valor == valor) {
+        if (anterior == NULL) {
+            // Remover o primeiro nó
+            No* temp = atual->prox;
+            free(atual);
+            return temp;
+        } else {
+            anterior->prox = atual->prox;
+            free(atual);
+            return lista;
         }
-        else
-        {
-            ant->prox = p->prox;
-        }
-        free(p);
+    }
+
+    // se valor não encontrado, retorna a lista original
+    return lista;
+}
+
+// função para imprimir a lista simples
+void imprimir_lista_simples(No* inicio) {
+    No* atual = inicio;
+    printf("Lista: ");
+
+    while (atual != NULL) {
+        printf("[%d ] -> ", atual->valor);
+        atual = atual->prox;
+    }
+    printf("NULL\n");
+}
+
+// função para desalocar a lista simples
+void destruir_lista_simples(No* lista) {
+    while(lista) {
+        No* temp = lista;
+        lista = lista->prox;
+        free(temp);
     }
 }

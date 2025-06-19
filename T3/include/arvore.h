@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+typedef struct s_arq_no
+{
+    int32_t chave:30;   
+    uint32_t esq:1;
+    uint32_t dir:1;
+} s_arq_no;
+
+typedef struct No {
+    s_arq_no info;
+    struct No* esq;
+    struct No* dir;
+} No;
+
+No* novoNo(int32_t chave);
+No* inserir(No* raiz, int32_t chave);
+No* remover(No* raiz, int32_t chave);
+No* buscar(No* raiz, int32_t chave);
+int32_t encontrarMenor(No* raiz);
+int32_t encontrarMaior(No* raiz);
+No* encontrarPredecessor(No* raiz, int32_t chave);
+No* encontrarSucessor(No* raiz, int32_t chave);
+void preOrdem(No* raiz, FILE* arquivo);
+void ordem_simetrica(No* raiz, FILE* arquivo);
+void posOrdem(No* raiz, FILE* arquivo);
+void liberarArvore(No* raiz);
+void salvarArvore(No* raiz, const char* nome_arquivo);
+No* carregarArvoreBin(const char* nome_arquivo);
+
