@@ -9,8 +9,7 @@ typedef struct No {
 
 
 No* inserir_fim(No* lista, int valor) {
-    No* novo = malloc(sizeof(No
-));
+    No* novo = malloc(sizeof(No));
     novo->valor = valor;
     novo->prox = NULL;
     novo->ant = NULL;
