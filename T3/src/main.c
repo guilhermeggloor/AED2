@@ -73,9 +73,7 @@ int main()
 
             default: 
                 printf("Opção invalida!\n");
-
         }
-
     }while (opcao != 7);
 
     return 0;

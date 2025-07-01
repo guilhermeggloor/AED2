@@ -3,7 +3,7 @@ SRC_DIR = src
 BUILD_DIR = build
 
 CC = gcc
-CFLAGS = -Wall -g -I$(INCLUDE_DIR)
+CFLAGS = -Wall -Wextra -pedantic -g -I$(INCLUDE_DIR)
 
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
 

@@ -38,7 +38,7 @@ No* inserir(No* raiz, int32_t chave) {
         raiz->dir = inserir(raiz->dir, chave);
     } else {
         // chave já existente na arvore, mandar um aviso
-        printf("Chave %d já existe na árvore, insira outra\n");
+        printf("Chave %d já existe na árvore, insira outra\n", chave);
         return raiz;
     }
 
@@ -64,10 +64,11 @@ No* remover(No* raiz, int32_t chave) {
             return temp;
         }
 
-        No* temp = encontrarMenor(raiz->dir);
-        raiz->info.chave = temp->info.chave;
-        raiz->dir = remover(raiz->dir, temp->info.chave);
+        int32_t menor = encontrarMenor(raiz->dir);
+        raiz->info.chave = menor;
+        raiz->dir = remover(raiz->dir, menor);
     }
+    return raiz;
 }
 
 // encontrar o menor elemento da arvore - 3
