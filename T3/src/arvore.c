@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "arvore.h"
 
+// cria um novo nó da arvore
 No* novoNo(int32_t chave) {
     No* novo = (No*)malloc(sizeof(No));
     novo->info.chave = chave;
@@ -9,8 +10,11 @@ No* novoNo(int32_t chave) {
     novo->info.dir = 0;
     novo->esq = NULL;
     novo->dir = NULL;
+
+    return novo;
 }
 
+// busca do elemento correspondente - 2
 No* buscar(No* raiz, int32_t chave) {
     if(raiz == NULL || raiz->info.chave == chave) {
         return raiz;
@@ -21,6 +25,7 @@ No* buscar(No* raiz, int32_t chave) {
         return buscar(raiz->dir, chave);
 }
 
+// operação de inserção - 1
 No* inserir(No* raiz, int32_t chave) {
     if (raiz == NULL)
         return novoNo(chave);
@@ -40,6 +45,7 @@ No* inserir(No* raiz, int32_t chave) {
     return raiz;
 }
 
+// operação de remoção - 5
 No* remover(No* raiz, int32_t chave) {
     if (raiz == NULL) return NULL;
 
@@ -64,6 +70,7 @@ No* remover(No* raiz, int32_t chave) {
     }
 }
 
+// encontrar o menor elemento da arvore - 3
 int32_t encontrarMenor(No* raiz) {
     No* atual = raiz;
     while (atual && atual->esq != NULL)
@@ -71,6 +78,7 @@ int32_t encontrarMenor(No* raiz) {
     return atual->info.chave;
 }
 
+// encontrar o maior elemento da arvore - 4
 int32_t encontrarMaior(No* raiz) {
     No* atual = raiz;
     while(atual && atual->dir != NULL) 
@@ -78,6 +86,7 @@ int32_t encontrarMaior(No* raiz) {
     return atual->info.chave;
 }
 
+// percurso em pre ordem
 void preOrdem(No* raiz, FILE* arquivo) {
     if (raiz != NULL) {
         fwrite(&(raiz->info), sizeof(s_arq_no), 1, arquivo);
@@ -86,6 +95,7 @@ void preOrdem(No* raiz, FILE* arquivo) {
     }
 }
 
+// percurso em ordem
 void ordem_simetrica(No* raiz, FILE* arquivo) {
     if(raiz != NULL) {
         ordem_simetrica(raiz->esq, arquivo);
@@ -94,6 +104,7 @@ void ordem_simetrica(No* raiz, FILE* arquivo) {
     }
 }
 
+// percurso em pós ordem
 void posOrdem(No* raiz, FILE* arquivo) {
     if(raiz != NULL) {
         posOrdem(raiz->esq, arquivo);
@@ -102,11 +113,77 @@ void posOrdem(No* raiz, FILE* arquivo) {
     }
 }
 
+void salvarArvPreOrdem(No* raiz, FILE* arquivo) {
+    if (raiz == NULL) {
+        int marcador = -1;
+        fwrite(&marcador, sizeof(int), 1, arquivo);
+        return;
+    }
+    fwrite(&raiz->info, sizeof(int), 1, arquivo);
+    salvarArvPreOrdem(raiz->esq, arquivo);
+    salvarArvPreOrdem(raiz->dir, arquivo);
+}
 
+No* carregarArvPreOrdem(FILE* arquivo) {
+    int info;
+    if (fread(&info, sizeof(int), 1, arquivo) !=  1)
+        return NULL;
 
+    if (info == -1)
+        return NULL;
 
-int main(){
+    No* no = novoNo(info);
+    no->esq = carregarArvPreOrdem(arquivo);
+    no->dir = carregarArvPreOrdem(arquivo);
 
+    return no;
+}
 
-    return 0;
+void salvarArvore(No* raiz, const char* nome_arquivo) {
+    FILE* arquivo = fopen(nome_arquivo, "wb");
+    if(!arquivo) {
+        perror("Erro ao abrir arquivo para escrita");
+        return;
+    }
+    salvarArvPreOrdem(raiz, arquivo);
+    fclose(arquivo);
+}
+
+No* carregarArvoreBin(const char* nome_arquivo) {
+    FILE* arquivo = fopen(nome_arquivo, "rb");
+    if(!arquivo) {
+        perror("Erro ao abrir arquivo para leitura");
+        return NULL;
+    }
+    No* raiz = carregarArvPreOrdem(arquivo);
+    fclose(arquivo);
+    return raiz;
+}
+
+void liberarArvore(No* raiz) {
+    if (raiz == NULL) return;
+    liberarArvore(raiz->esq);
+    liberarArvore(raiz->dir);
+    free(raiz);
+}
+
+void imprimirPreOrdem(No* raiz) {
+    if (raiz == NULL) return;
+    printf("%d ", raiz->info.chave);
+    imprimirPreOrdem(raiz->esq);
+    imprimirPreOrdem(raiz->dir);
+}
+
+void imprimirEmOrdem(No* raiz) {
+    if (raiz == NULL) return;
+    imprimirEmOrdem(raiz->esq);
+    printf("%d ", raiz->info.chave);
+    imprimirEmOrdem(raiz->dir);
+}
+
+void imprimirPosOrdem(No* raiz) {
+    if (raiz == NULL) return;
+    imprimirPosOrdem(raiz->esq);
+    imprimirPosOrdem(raiz->dir);
+    printf("%d ", raiz->info.chave);
 }
