@@ -40,7 +40,7 @@ void liberarArvore(No* raiz);
 void salvarArvore(No* raiz, const char* nome_arquivo);
 No* carregarArvoreBin(const char* nome_arquivo);
 
-
+// impressão no terminal em pré, ordem e pós
 void imprimirPreOrdem(No* raiz);
 void imprimirEmOrdem(No* raiz);
 void imprimirPosOrdem(No* raiz);

@@ -1,5 +1,7 @@
 # 🌲 Árvore Binária de Busca em C
 
+# Feito por: Guilherme Garcia Gloor
+
 ## 📁 Estrutura do Projeto
 
 ├── include/

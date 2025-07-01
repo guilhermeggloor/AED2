@@ -113,6 +113,7 @@ void posOrdem(No* raiz, FILE* arquivo) {
     }
 }
 
+// salva a arvore em pré ordem com arquivo
 void salvarArvPreOrdem(No* raiz, FILE* arquivo) {
     if (raiz == NULL) {
         int marcador = -1;
@@ -124,6 +125,7 @@ void salvarArvPreOrdem(No* raiz, FILE* arquivo) {
     salvarArvPreOrdem(raiz->dir, arquivo);
 }
 
+// Carrega a arvore em pré ordem com operação de arquivo
 No* carregarArvPreOrdem(FILE* arquivo) {
     int info;
     if (fread(&info, sizeof(int), 1, arquivo) !=  1)
@@ -139,6 +141,7 @@ No* carregarArvPreOrdem(FILE* arquivo) {
     return no;
 }
 
+// salva a arvore no arquivo.bin
 void salvarArvore(No* raiz, const char* nome_arquivo) {
     FILE* arquivo = fopen(nome_arquivo, "wb");
     if(!arquivo) {
@@ -149,6 +152,7 @@ void salvarArvore(No* raiz, const char* nome_arquivo) {
     fclose(arquivo);
 }
 
+// finalmente carrega mais uma vez a arvore no arquivo.bin (trabalheira que deu esse negócio)
 No* carregarArvoreBin(const char* nome_arquivo) {
     FILE* arquivo = fopen(nome_arquivo, "rb");
     if(!arquivo) {
@@ -160,6 +164,7 @@ No* carregarArvoreBin(const char* nome_arquivo) {
     return raiz;
 }
 
+// desaloca e libera a arvore (importante quando for sair do programa)
 void liberarArvore(No* raiz) {
     if (raiz == NULL) return;
     liberarArvore(raiz->esq);
@@ -167,6 +172,7 @@ void liberarArvore(No* raiz) {
     free(raiz);
 }
 
+// operação para imprimir a arvore em pré ordem e mostrar ao usuário no terminal
 void imprimirPreOrdem(No* raiz) {
     if (raiz == NULL) return;
     printf("%d ", raiz->info.chave);
@@ -174,6 +180,7 @@ void imprimirPreOrdem(No* raiz) {
     imprimirPreOrdem(raiz->dir);
 }
 
+// operação para imprimir em ordem e mostrar o usuário
 void imprimirEmOrdem(No* raiz) {
     if (raiz == NULL) return;
     imprimirEmOrdem(raiz->esq);
@@ -181,6 +188,7 @@ void imprimirEmOrdem(No* raiz) {
     imprimirEmOrdem(raiz->dir);
 }
 
+// cansei, op. bla bla bla, imprimi em pós ordem ao usuário.
 void imprimirPosOrdem(No* raiz) {
     if (raiz == NULL) return;
     imprimirPosOrdem(raiz->esq);
