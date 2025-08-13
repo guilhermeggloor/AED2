@@ -9,7 +9,7 @@
 #include "pilha.h"
 
 // iniciar como nulo
-No* lista_simples = NULL;
+s_no* lista_simples = NULL;
 NoCircular* lista_circular = NULL;
 NoDuplo* lista_dupla = NULL;
 Fila* fila = NULL;
@@ -31,7 +31,7 @@ int main() {
 
         switch (estrutura) {
             case 1:
-                interface_lista_simples(); 
+                interface_lista_simples();
                 break;
             case 2:
                 interface_lista_circular();
@@ -47,7 +47,7 @@ int main() {
                 break;
             case 0:
                 // Verificar se é diferente de nulo e Desalocar todas as estruturas antes de sair
-                if (lista_simples != NULL) {    
+                if (lista_simples != NULL) {
                  destruir_lista_simples(lista_simples);
                  lista_simples = NULL;
                 }
@@ -76,7 +76,7 @@ int main() {
 }
 
 void interface_lista_simples() {
-    
+
     int opcao_operacao = -1;
 
     // interface para operação das listas (vai ser replicada para as outras estruturas)
@@ -95,7 +95,7 @@ void interface_lista_simples() {
                 int valor;
                 printf("Digite o valor a ser buscado: ");
                 scanf("%d", &valor);
-                No* resultado = buscar(lista_simples, valor);
+                s_no* resultado = buscar(lista_simples, valor);
                 if (resultado) {
                     printf("Valor %d encontrado.\n", valor);
                 } else {

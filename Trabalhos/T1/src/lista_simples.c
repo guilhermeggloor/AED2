@@ -3,8 +3,8 @@
 #include "lista_simples.h"
 
 //procedimento de busca
-No* buscar(No* inicio, int valor) {
-    No* atual = inicio;
+s_no* buscar(s_no* inicio, int valor) {
+    s_no* atual = inicio;
 
     while (atual != NULL && atual->valor <= valor) {
         if (atual->valor == valor) {
@@ -16,8 +16,8 @@ No* buscar(No* inicio, int valor) {
     return NULL; // retorna nulo se não encontrado
 }
 
-No* inserir_ordenado(No* inicio, int valor) {
-    No* novo = malloc(sizeof(No));
+s_no* inserir_ordenado(s_no* inicio, int valor) {
+    s_no* novo = malloc(sizeof(s_no));
     if (!novo) {
         printf("Erro de alocação.\n");
         return inicio;
@@ -33,7 +33,7 @@ No* inserir_ordenado(No* inicio, int valor) {
     }
 
     // Inserção no meio ou final
-    No* atual = inicio;
+    s_no* atual = inicio;
     while (atual->prox != NULL && atual->prox->valor < valor) {
         atual = atual->prox;
     }
@@ -44,9 +44,9 @@ No* inserir_ordenado(No* inicio, int valor) {
     return inicio;
 }
 
-No* remover(No* lista, int valor) {
-    No* atual = lista;
-    No* anterior = NULL;
+s_no* remover(s_no* lista, int valor) {
+    s_no* atual = lista;
+    s_no* anterior = NULL;
 
     while (atual != NULL && atual->valor < valor) {
         anterior = atual;
@@ -56,7 +56,7 @@ No* remover(No* lista, int valor) {
     if (atual != NULL && atual->valor == valor) {
         if (anterior == NULL) {
             // Remover o primeiro nó
-            No* temp = atual->prox;
+            s_no* temp = atual->prox;
             free(atual);
             return temp;
         } else {
@@ -71,8 +71,8 @@ No* remover(No* lista, int valor) {
 }
 
 // função para imprimir a lista simples
-void imprimir_lista_simples(No* inicio) {
-    No* atual = inicio;
+void imprimir_lista_simples(s_no* inicio) {
+    s_no* atual = inicio;
     printf("Lista: ");
 
     while (atual != NULL) {
@@ -83,9 +83,9 @@ void imprimir_lista_simples(No* inicio) {
 }
 
 // função para desalocar a lista simples
-void destruir_lista_simples(No* lista) {
+void destruir_lista_simples(s_no* lista) {
     while(lista) {
-        No* temp = lista;
+        s_no* temp = lista;
         lista = lista->prox;
         free(temp);
     }
