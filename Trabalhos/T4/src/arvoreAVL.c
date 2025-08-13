@@ -18,6 +18,17 @@ s_no* novoNo(int32_t chave) {
     return novo;
 }
 
+// busca do elemento correspondente - 2
+s_no* buscar(s_no* raiz, int32_t chave) {
+    if(raiz == NULL || raiz->chave == chave) {
+        return raiz;
+    }
+    if(chave < raiz->chave)
+        return buscar(raiz->esq, chave);
+    else
+        return buscar(raiz->dir, chave);
+}
+
 int altura(s_no* no) {
     if(no == NULL)
         return 0;
@@ -64,17 +75,6 @@ s_no* rotacaoEsquerda(s_no* x) {
 
 }
 
-// busca do elemento correspondente - 2
-s_no* buscar(s_no* raiz, int32_t chave) {
-    if(raiz == NULL || raiz->chave == chave) {
-        return raiz;
-    }
-    if(chave < raiz->chave)
-        return buscar(raiz->esq, chave);
-    else
-        return buscar(raiz->dir, chave);
-}
-
 // operação de inserção - 1
 s_no* inserir(s_no* no, int32_t chave) {
     if (no == NULL)
@@ -97,7 +97,7 @@ s_no* inserir(s_no* no, int32_t chave) {
 
     //Caso da esquerda (LL)
     // O desbalanceamento é -2 e a nova chave foi inserida na subárvore esquerda do filho esquerdo
-    if(balanco <- 1 && chave < no->esq->chave) {
+    if(balanco < -1 && chave < no->esq->chave) {
         printf("Rotação Direita (LL) em torno do nó %d\n", no->chave);
         return rotacaoDireita(no);
     }
@@ -111,7 +111,7 @@ s_no* inserir(s_no* no, int32_t chave) {
 
     //Caso esquerda-direita (LR)
     // O desbalanceamento é -2 e a nova chave foi inserida na subárvore direita do filho esquerdo
-    if(balanco <- -1 && chave > no->esq->chave) {
+    if(balanco < -1 && chave > no->esq->chave) {
         printf("Rotação Esquerda-Direita (LR) em torno do novo nó %d\n", no->chave);
         no->esq = rotacaoEsquerda(no);
         return rotacaoDireita(no);
@@ -127,6 +127,14 @@ s_no* inserir(s_no* no, int32_t chave) {
 
     // Retorna o ponteiro do nó (sem mudanças se estava balanceado ou não)
     return no;
+}
+
+s_no* encontrarNoMenor(s_no* no) {
+    s_no* atual = no;
+    // Loop para encontrar a folha mais à esquerda
+    while (atual && atual->esq != NULL)
+        atual = atual->esq;
+    return atual;
 }
 
 // operação de remoção - 5
@@ -148,10 +156,52 @@ s_no* remover(s_no* raiz, int32_t chave) {
             return temp;
         }
 
-        int32_t menor = encontrarMenor(raiz->dir);
-        raiz->chave = menor;
-        raiz->dir = remover(raiz->dir, menor);
+        // nó com dois filhos: pega o sucessor em ordem (o menor da subárvore direita)
+        s_no* temp = encontrarNoMenor(raiz->dir);
+
+        // Copia o conteudo do sucessor para este nó
+        raiz->chave = temp->chave;
+
+        // remove o sucessor
+        raiz->dir = remover(raiz->dir, temp->chave);
     }
+    if(raiz == NULL)
+        return raiz;
+
+    // Atualiza o fator de balanceamento do nó atual
+    raiz->bal = obterBalanceamento(raiz);
+    int balanco = raiz->bal;
+
+    // Verifica se o nó fica desbalanceado e executa as rotações
+    //Caso pesado à Direita (balanco > 1)
+    if(balanco > 1 ) {
+        // Caso Direita-Direita (RR)
+        if(obterBalanceamento(raiz->dir) >= 0) {
+            printf("Rotação Esquerda (RR) na remoção do nó %d\n", raiz->chave);
+            return rotacaoEsquerda(raiz);
+        }
+        // Caso Direita-Esqurda (RL)
+        else {
+            printf("Rotação Direita (RL) na remoção do nó %d\n", raiz->chave);
+            raiz->dir = rotacaoDireita(raiz->dir);
+            return rotacaoEsquerda(raiz);
+        }
+    }
+
+    if (balanco < -1) {
+        // Caso Esquerda-Esquerda (LL)
+        if(obterBalanceamento(raiz->esq) <= 0) {
+            printf("Rotação Direita (LL) na remoção do nó %d\n", raiz->chave);
+            return rotacaoDireita(raiz);
+        }
+        //Caso Esquerda-Direita (LR)
+        else {
+            printf("Rotação Esquerda-Direita (LR) na remoção do nó %d\n", raiz->chave);
+            raiz->esq = rotacaoEsquerda(raiz->dir);
+            return rotacaoDireita(raiz);
+        }
+    }
+
     return raiz;
 }
 
