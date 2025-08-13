@@ -250,30 +250,50 @@ void posOrdem(s_no* raiz, FILE* arquivo) {
 
 // salva a arvore em pré ordem com arquivo
 void salvarArvPreOrdem(s_no* raiz, FILE* arquivo) {
-    if (raiz == NULL) {
-        int marcador = -1;
-        fwrite(&marcador, sizeof(int), 1, arquivo);
+    if(raiz == NULL) {
         return;
     }
-    fwrite(&raiz, sizeof(int), 1, arquivo);
+
+    s_arq_no no_para_arquivo;
+    no_para_arquivo.chave = raiz->chave;
+    no_para_arquivo.bal = raiz->bal;
+    // Define as flags de existência dos filhos
+    no_para_arquivo.esq = (raiz->esq != NULL);
+    no_para_arquivo.dir = (raiz->dir != NULL);
+
+    // Grava a struct formatada no arquivo
+    fwrite(&no_para_arquivo, sizeof(s_arq_no), 1, arquivo);
+
+    // Recorre para os filhos (que só serão gravados se existirem
     salvarArvPreOrdem(raiz->esq, arquivo);
     salvarArvPreOrdem(raiz->dir, arquivo);
 }
 
 // Carrega a arvore em pré ordem com operação de arquivo
 s_no* carregarArvPreOrdem(FILE* arquivo) {
-    int info;
-    if (fread(&info, sizeof(int), 1, arquivo) !=  1)
+    s_arq_no no_do_arquivo;
+
+    if(fread(&no_do_arquivo, sizeof(s_arq_no), 1, arquivo) != 1) {
         return NULL;
+    }
 
-    if (info == -1)
-        return NULL;
+    // Cria um nó em memória com os dados lidos
+    s_no* no_na_memoria = novoNo(no_do_arquivo.chave);
+    no_na_memoria->bal = no_do_arquivo.bal;
+    no_na_memoria->esq = NULL; // Garante que começam como NULL
+    no_na_memoria->dir = NULL;
 
-    s_no* no = novoNo(info);
-    no->esq = carregarArvPreOrdem(arquivo);
-    no->dir = carregarArvPreOrdem(arquivo);
+    // Se a flag 'esq' estava ligada, reconstrói a subárvore esquerda
+    if (no_do_arquivo.esq) {
+        no_na_memoria->esq = carregarArvPreOrdem(arquivo);
+    }
 
-    return no;
+    //Se a flag 'dir' estava ligada, reconstrói a subárvore direita
+    if(no_do_arquivo.dir) {
+        no_na_memoria->dir = carregarArvPreOrdem(arquivo);
+    }
+
+    return no_na_memoria;
 }
 
 // salva a arvore no arquivo.bin
@@ -291,7 +311,6 @@ void salvarArvore(s_no* raiz, const char* nome_arquivo) {
 s_no* carregarArvoreBin(const char* nome_arquivo) {
     FILE* arquivo = fopen(nome_arquivo, "rb");
     if(!arquivo) {
-        perror("Erro ao abrir arquivo para leitura");
         return NULL;
     }
     s_no* raiz = carregarArvPreOrdem(arquivo);
@@ -310,7 +329,7 @@ void liberarArvore(s_no* raiz) {
 // operação para imprimir a arvore em pré ordem e mostrar ao usuário no terminal
 void imprimirPreOrdem(s_no* raiz) {
     if (raiz == NULL) return;
-    printf("%d ", raiz->chave);
+    printf("%d(bal: %d)", raiz->chave, raiz->bal);
     imprimirPreOrdem(raiz->esq);
     imprimirPreOrdem(raiz->dir);
 }
@@ -319,7 +338,7 @@ void imprimirPreOrdem(s_no* raiz) {
 void imprimirEmOrdem(s_no* raiz) {
     if (raiz == NULL) return;
     imprimirEmOrdem(raiz->esq);
-    printf("%d ", raiz->chave);
+    printf("%d(bal: %d) ", raiz->chave, raiz->bal);
     imprimirEmOrdem(raiz->dir);
 }
 
@@ -328,5 +347,5 @@ void imprimirPosOrdem(s_no* raiz) {
     if (raiz == NULL) return;
     imprimirPosOrdem(raiz->esq);
     imprimirPosOrdem(raiz->dir);
-    printf("%d ", raiz->chave);
+    printf("%d(bal: %d)", raiz->chave, raiz-> bal);
 }
