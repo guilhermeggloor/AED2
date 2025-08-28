@@ -10,8 +10,7 @@ s_no* novoNo(int32_t chave) {
         exit(EXIT_FAILURE);
     }
     novo->chave = chave;
-    novo->esq = 0;
-    novo->dir = 0;
+    novo->bal = 0;
     novo->esq = NULL;
     novo->dir = NULL;
 
@@ -44,35 +43,64 @@ int obterBalanceamento(s_no* no) {
     return altura(no->dir) - altura(no->esq);
 }
 
+// SUBSTITUA SUA FUNÇÃO rotacaoDireita POR ESTA
 s_no* rotacaoDireita(s_no* y) {
-    s_no* x = y->esq;
-    s_no* T2 = x->dir;
+    printf("\n--- INICIANDO ROTACAO DIREITA no no [Chave: %d, Endereco: %p] ---\n", y->chave, (void*)y);
 
-    // realiza a rotação
+    s_no* x = y->esq;
+    printf("  -> Filho esquerdo (novo pivo 'x') e [Chave: %d, Endereco: %p]\n", x->chave, (void*)x);
+
+    s_no* T2 = x->dir;
+    if (T2 != NULL) {
+        printf("  -> Subarvore T2 (filho direito de 'x') e [Chave: %d, Endereco: %p]\n", T2->chave, (void*)T2);
+    } else {
+        printf("  -> Subarvore T2 (filho direito de 'x') e [NULL]\n");
+    }
+
+    // Realiza a rotação
+    printf("  -> ETAPA 1: x->dir = y (pivo aponta para antiga raiz)\n");
     x->dir = y;
+    printf("  -> ETAPA 2: y->esq = T2 (antiga raiz adota T2)\n");
     y->esq = T2;
 
-    //Atualiza os fatores de balanceamento dos nós afetados
+    // Atualiza os fatores de balanceamento
+    printf("  -> Atualizando balanceamento de 'y' (antiga raiz)...\n");
     y->bal = obterBalanceamento(y);
+    printf("  -> Atualizando balanceamento de 'x' (nova raiz)...\n");
     x->bal = obterBalanceamento(x);
 
+    printf("--- ROTACAO DIREITA CONCLUIDA. Nova raiz da subarvore e [Chave: %d, Endereco: %p] ---\n\n", x->chave, (void*)x);
     return x;
 }
 
+// SUBSTITUA SUA FUNÇÃO rotacaoEsquerda POR ESTA
 s_no* rotacaoEsquerda(s_no* x) {
-    s_no* y = x->dir;
-    s_no* T2 = y->esq;
+    printf("\n--- INICIANDO ROTACAO ESQUERDA no no [Chave: %d, Endereco: %p] ---\n", x->chave, (void*)x);
 
-    // realiza a rotação
+    s_no* y = x->dir;
+    printf("  -> Filho direito (novo pivo 'y') e [Chave: %d, Endereco: %p]\n", y->chave, (void*)y);
+
+    s_no* T2 = y->esq;
+    if (T2 != NULL) {
+        printf("  -> Subarvore T2 (filho esquerdo de 'y') e [Chave: %d, Endereco: %p]\n", T2->chave, (void*)T2);
+    } else {
+        printf("  -> Subarvore T2 (filho esquerdo de 'y') e [NULL]\n");
+    }
+
+    // Realiza a rotação
+    printf("  -> ETAPA 1: y->esq = x (pivo aponta para antiga raiz)\n");
     y->esq = x;
+    printf("  -> ETAPA 2: x->dir = T2 (antiga raiz adota T2)\n");
     x->dir = T2;
 
-    // Atualiza os fatores de balanceamento dos nós afetados
+    // Atualiza os fatores de balanceamento
+    printf("  -> Atualizando balanceamento de 'x' (antiga raiz)...\n");
     x->bal = obterBalanceamento(x);
+    printf("  -> Atualizando balanceamento de 'y' (nova raiz)...\n");
     y->bal = obterBalanceamento(y);
 
+    printf("--- ROTACAO ESQUERDA CONCLUIDA. Nova raiz da subarvore e [Chave: %d, Endereco: %p] ---\n\n", y->chave, (void*)y);
     return y;
-
 }
 
 // operação de inserção - 1
@@ -97,32 +125,28 @@ s_no* inserir(s_no* no, int32_t chave) {
 
     //Caso da esquerda (LL)
     // O desbalanceamento é -2 e a nova chave foi inserida na subárvore esquerda do filho esquerdo
-    if(balanco < -1 && chave < no->esq->chave) {
-        printf("Rotação Direita (LL) em torno do nó %d\n", no->chave);
-        return rotacaoDireita(no);
+    if (balanco < -1) {
+        if(obterBalanceamento(no->esq) <= 0) {
+            printf("Rotação Direita (LL) em torno do novo nó %d\n", no->chave);
+            return rotacaoDireita(no);
+        }
+        else {
+            printf("Rotação Esquerda-Direita (LR) em torno do novo nó %d\n", no->chave);
+            no->esq = rotacaoEsquerda(no->esq);
+            return rotacaoDireita(no);
+        }
     }
 
-    //Caso direita (RR)
-    // O desbalanceamento é +2 e a nova chave foi inserida na subárvore direita do filho direito
-    if(balanco > 1 && chave > no->dir->chave) {
-        printf("Rotação Esquerda (RR) em torno do nó %d\n", no->chave);
-        return rotacaoEsquerda(no);
-    }
-
-    //Caso esquerda-direita (LR)
-    // O desbalanceamento é -2 e a nova chave foi inserida na subárvore direita do filho esquerdo
-    if(balanco < -1 && chave > no->esq->chave) {
-        printf("Rotação Esquerda-Direita (LR) em torno do novo nó %d\n", no->chave);
-        no->esq = rotacaoEsquerda(no);
-        return rotacaoDireita(no);
-    }
-
-    //Caso direita-esquerda (RL)
-    // O desbalanceamento é +2 e a nova chave foi inserida na subárvore esquerda do filho direito
-    if(balanco > 1 && chave < no->dir->chave) {
-        printf("Rotação Direita-Esquerda (RL) em torno do novo nó %d\n", no->chave);
-        no->dir = rotacaoDireita(no);
-        return rotacaoEsquerda(no);
+    if (balanco > -1) {
+        if(obterBalanceamento(no->dir) >= 0) {
+            printf("Rotação Esquerda (RR) em torno do novo nó %d\n", no->chave);
+            return rotacaoEsquerda(no);
+        }
+        else {
+            printf("Rotação Direita-Esquerda (RL) em torno do novo nó %d\n", no->chave);
+            no->dir = rotacaoDireita(no->dir);
+            return rotacaoEsquerda(no);
+        }
     }
 
     // Retorna o ponteiro do nó (sem mudanças se estava balanceado ou não)
@@ -197,7 +221,7 @@ s_no* remover(s_no* raiz, int32_t chave) {
         //Caso Esquerda-Direita (LR)
         else {
             printf("Rotação Esquerda-Direita (LR) na remoção do nó %d\n", raiz->chave);
-            raiz->esq = rotacaoEsquerda(raiz->dir);
+            raiz->esq = rotacaoEsquerda(raiz->esq);
             return rotacaoDireita(raiz);
         }
     }

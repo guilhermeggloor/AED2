@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "arvore.h"
+#include "arvoreAVL.h"
 
 #define ARQUIVO_BINARIO "arvore.bin"
 
@@ -13,7 +13,7 @@ int main()
     raiz = carregarArvoreBin(ARQUIVO_BINARIO);
 
     do {
-        printf("\nArvore Binaria:\n ");
+        printf("\nArvore AVL:\n ");
         printf("1 - Inserir\n");
         printf("2 - Busca\n");
         printf("3 - Encontrar Menor\n");
@@ -41,13 +41,21 @@ int main()
                     printf("Valor %d não encontrado.\n", valor);
                 break;
             case 3: {
-                int32_t menor = encontrarMenor(raiz);
-                printf("Menor valor: %d\n", menor);
+                if(raiz == NULL) {
+                    printf("A Arvore esta vazia!\n");
+                }else {
+                    int32_t menor = encontrarMenor(raiz);
+                    printf("Menor valor: %d\n", menor);
+                }
                 break;
             }
             case 4: {
-                int32_t maior = encontrarMaior(raiz);
-                printf("Maior valor: %d\n", maior);
+                if(raiz == NULL) {
+                    printf("A Arvore esta vazia!\n");
+                }else {
+                    int32_t maior = encontrarMaior(raiz);
+                    printf("Maior valor: %d\n", maior);
+                }
                 break;
             }
             case 5:
