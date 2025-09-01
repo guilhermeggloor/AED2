@@ -27,25 +27,6 @@ s_no* buscar(s_no* raiz, int32_t chave) {
     else
         return buscar(raiz->dir, chave);
 }
-
-int altura(s_no* no) {
-    if(no == NULL)
-        return 0;
-
-    int alt_esq = altura(no->esq);
-    int alt_dir = altura(no->dir);
-    return (alt_esq > alt_dir ? alt_esq : alt_dir) + 1;
-}
-
-int obterBalanceamento(s_no* no) {
-    if(no == NULL)
-        return 0;
-    return altura(no->dir) - altura(no->esq);
-}
-
-// ATENÇÃO: A assinatura e o retorno destas funções MUDARAM.
-// Elas agora são 'void' e recebem um ponteiro para ponteiro.
-
 // Rotação simples à direita (caso1)
 void rotacaoDireita(s_no** pt) {
     s_no* y = *pt;
@@ -223,24 +204,24 @@ void remover_recursivo(s_no** pt, int32_t chave, int* h) {
             }
         }
     }
-    //NÓ ENCONTRADO - EXECUTA A REMOÇÃO
+    // SE NÓ ENCONTRADO ? - EXECUTA A REMOÇÃO
     else {
         s_no* aux = *pt;
         // Caso com 0 ou 1 filho (à direita)
         if (aux->esq == NULL) {
             *pt = aux->dir;
-            *h = 1; // A árvore encolheu
+            *h = 1; // A árvore encolhe
             free(aux);
         }
         // Caso com 1 filho (à esquerda)
         else if (aux->dir == NULL) {
             *pt = aux->esq;
-            *h = 1; // A árvore encolheu
+            *h = 1; // A árvore encolhe
             free(aux);
         }
         // Caso com 2 filhos
         else {
-            // Encontra o sucessor (menor nó da subárvore direita)
+            // Encontra o sucessor
             s_no* sucessor = aux->dir;
             while (sucessor->esq != NULL) {
                 sucessor = sucessor->esq;
@@ -249,7 +230,7 @@ void remover_recursivo(s_no** pt, int32_t chave, int* h) {
             aux->chave = sucessor->chave;
             // Remove o nó sucessor da subárvore direita
             remover_recursivo(&aux->dir, sucessor->chave, h);
-            // Na volta, se a subárvore direita encolheu, rebalanceia
+            // Na volta, se a subárvore direita encolhe, rebalanceia
             if (*h) {
                  switch ((*pt)->bal) {
                     case 1:  (*pt)->bal = 0; *h = 1; break;
@@ -261,7 +242,7 @@ void remover_recursivo(s_no** pt, int32_t chave, int* h) {
     }
 }
 
-// Função "wrapper" para ser chamada pelo main.c
+// Função remover para usar de chamada
 s_no* remover(s_no* raiz, int32_t chave) {
     int h = 0; // Flag que indica se a altura da subárvore diminuiu
     remover_recursivo(&raiz, chave, &h);
