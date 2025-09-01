@@ -17,7 +17,7 @@ s_no* novoNo(int32_t chave) {
     return novo;
 }
 
-// busca do elemento correspondente - 2
+// busca do elemento correspondente
 s_no* buscar(s_no* raiz, int32_t chave) {
     if(raiz == NULL || raiz->chave == chave) {
         return raiz;
@@ -43,114 +43,229 @@ int obterBalanceamento(s_no* no) {
     return altura(no->dir) - altura(no->esq);
 }
 
-// SUBSTITUA SUA FUNÇÃO rotacaoDireita POR ESTA
-s_no* rotacaoDireita(s_no* y) {
-    printf("\n--- INICIANDO ROTACAO DIREITA no no [Chave: %d, Endereco: %p] ---\n", y->chave, (void*)y);
+// ATENÇÃO: A assinatura e o retorno destas funções MUDARAM.
+// Elas agora são 'void' e recebem um ponteiro para ponteiro.
 
+// Rotação simples à direita (caso1)
+void rotacaoDireita(s_no** pt) {
+    s_no* y = *pt;
     s_no* x = y->esq;
-    printf("  -> Filho esquerdo (novo pivo 'x') e [Chave: %d, Endereco: %p]\n", x->chave, (void*)x);
-
-    s_no* T2 = x->dir;
-    if (T2 != NULL) {
-        printf("  -> Subarvore T2 (filho direito de 'x') e [Chave: %d, Endereco: %p]\n", T2->chave, (void*)T2);
-    } else {
-        printf("  -> Subarvore T2 (filho direito de 'x') e [NULL]\n");
-    }
-
-    // Realiza a rotação
-    printf("  -> ETAPA 1: x->dir = y (pivo aponta para antiga raiz)\n");
+    y->esq = x->dir;
     x->dir = y;
-    printf("  -> ETAPA 2: y->esq = T2 (antiga raiz adota T2)\n");
-    y->esq = T2;
-
-    // Atualiza os fatores de balanceamento
-    printf("  -> Atualizando balanceamento de 'y' (antiga raiz)...\n");
-    y->bal = obterBalanceamento(y);
-    printf("  -> Atualizando balanceamento de 'x' (nova raiz)...\n");
-    x->bal = obterBalanceamento(x);
-
-    printf("--- ROTACAO DIREITA CONCLUIDA. Nova raiz da subarvore e [Chave: %d, Endereco: %p] ---\n\n", x->chave, (void*)x);
-    return x;
+    *pt = x; // A nova raiz da subárvore agora é x
 }
 
-// SUBSTITUA SUA FUNÇÃO rotacaoEsquerda POR ESTA
-s_no* rotacaoEsquerda(s_no* x) {
-    printf("\n--- INICIANDO ROTACAO ESQUERDA no no [Chave: %d, Endereco: %p] ---\n", x->chave, (void*)x);
-
+// Rotação simples à esquerda (caso2)
+void rotacaoEsquerda(s_no** pt) {
+    s_no* x = *pt;
     s_no* y = x->dir;
-    printf("  -> Filho direito (novo pivo 'y') e [Chave: %d, Endereco: %p]\n", y->chave, (void*)y);
-
-    s_no* T2 = y->esq;
-    if (T2 != NULL) {
-        printf("  -> Subarvore T2 (filho esquerdo de 'y') e [Chave: %d, Endereco: %p]\n", T2->chave, (void*)T2);
-    } else {
-        printf("  -> Subarvore T2 (filho esquerdo de 'y') e [NULL]\n");
-    }
-
-    // Realiza a rotação
-    printf("  -> ETAPA 1: y->esq = x (pivo aponta para antiga raiz)\n");
+    x->dir = y->esq;
     y->esq = x;
-    printf("  -> ETAPA 2: x->dir = T2 (antiga raiz adota T2)\n");
-    x->dir = T2;
-
-    // Atualiza os fatores de balanceamento
-    printf("  -> Atualizando balanceamento de 'x' (antiga raiz)...\n");
-    x->bal = obterBalanceamento(x);
-    printf("  -> Atualizando balanceamento de 'y' (nova raiz)...\n");
-    y->bal = obterBalanceamento(y);
-
-    printf("--- ROTACAO ESQUERDA CONCLUIDA. Nova raiz da subarvore e [Chave: %d, Endereco: %p] ---\n\n", y->chave, (void*)y);
-    return y;
+    *pt = y; // A nova raiz da subárvore agora é y
 }
 
-// operação de inserção - 1
-s_no* inserir(s_no* no, int32_t chave) {
-    if (no == NULL)
-        return (novoNo(chave));
+// Rebalanceamento quando a subárvore esquerda fica muito alta
+void caso1(s_no** pt, int* h) {
+    printf("Rebalanceamento (Esquerda) no no %d\n", (*pt)->chave);
+    s_no* ptu = (*pt)->esq;
 
-    if (chave < no->chave)
-        no->esq = inserir(no->esq, chave);
-    else if (chave > no->chave)
-        no->dir = inserir(no->dir, chave);
+    // Caso 1.1: Rotação Simples à Direita (LL)
+    if (ptu->bal == -1) {
+        (*pt)->esq = ptu->dir;
+        ptu->dir = *pt;
+        (*pt)->bal = 0;
+        *pt = ptu;
+    }
+    // Caso 1.2: Rotação Dupla Esquerda-Direita (LR)
     else {
-        printf("chave %d já existente na árvore.\n", chave);
-        return no;
+        s_no* ptv = ptu->dir;
+        ptu->dir = ptv->esq;
+        ptv->esq = ptu;
+        (*pt)->esq = ptv->dir;
+        ptv->dir = *pt;
+
+        // Ajusta os balances com base no pivo da rotação dupla
+        if (ptv->bal == -1) (*pt)->bal = 1;
+        else (*pt)->bal = 0;
+        if (ptv->bal == 1) ptu->bal = -1;
+        else ptu->bal = 0;
+
+        *pt = ptv;
     }
 
-    // Atualizando fator do nó de balanceamento de ant
-    no->bal = obterBalanceamento(no);
-    int balanco = no->bal;
+    (*pt)->bal = 0;
+    *h = 0; // A altura foi normalizada
+}
 
-    // Verifica se o nó é desbalanceado e executa as rotações
+// Rebalanceamento quando a subárvore direita fica muito alta
+void caso2(s_no** pt, int* h) {
+    printf("Rebalanceamento (Direita) no no %d\n", (*pt)->chave);
+    s_no* ptu = (*pt)->dir;
 
-    //Caso da esquerda (LL)
-    // O desbalanceamento é -2 e a nova chave foi inserida na subárvore esquerda do filho esquerdo
-    if (balanco < -1) {
-        if(obterBalanceamento(no->esq) <= 0) {
-            printf("Rotação Direita (LL) em torno do novo nó %d\n", no->chave);
-            return rotacaoDireita(no);
+    // Caso 2.1: Rotação Simples à Esquerda (RR)
+    if (ptu->bal == 1) {
+        (*pt)->dir = ptu->esq;
+        ptu->esq = *pt;
+        (*pt)->bal = 0;
+        *pt = ptu;
+    }
+    // Caso 2.2: Rotação Dupla Direita-Esquerda (RL)
+    else {
+        s_no* ptv = ptu->esq;
+        ptu->esq = ptv->dir;
+        ptv->dir = ptu;
+        (*pt)->dir = ptv->esq;
+        ptv->esq = *pt;
+
+        // Ajusta os balances com base no pivo da rotação dupla
+        if (ptv->bal == 1) (*pt)->bal = -1;
+        else (*pt)->bal = 0;
+        if (ptv->bal == -1) ptu->bal = 1;
+        else ptu->bal = 0;
+
+        *pt = ptv;
+    }
+
+    (*pt)->bal = 0;
+    *h = 0; // A altura foi normalizada
+}
+void inserir_recursivo(s_no** pt, int32_t chave, int* h) {
+    // Se o nó é nulo, chegamos ao ponto de inserção
+    if (*pt == NULL) {
+        *pt = novoNo(chave);
+        *h = 1; // Avisa para a chamada anterior que a altura cresceu
+        return;
+    }
+
+    // Se a chave já existe, retorne.
+    if (chave == (*pt)->chave) {
+        printf("Chave %d já existe na árvore.\n", chave);
+        *h = 0;
+        return;
+    }
+
+    // Navega para a subárvore correta
+    if (chave < (*pt)->chave) {
+        inserir_recursivo(&(*pt)->esq, chave, h);
+        // Na volta da recursão, se a altura da subárvore esquerda cresce ? 
+        if (*h) {
+            switch ((*pt)->bal) {
+                case 1: // Estava pesado à direita, fica balanceado
+                    (*pt)->bal = 0;
+                    *h = 0;
+                    break;
+                case 0: // balanceado, agora fica  à esquerda
+                    (*pt)->bal = -1;
+                    *h = 1;
+                    break;
+                case -1: // pesado à esquerda, precisa rebalancear
+                    caso1(pt, h);
+                    break;
+            }
         }
+    } else {
+        inserir_recursivo(&(*pt)->dir, chave, h);
+        // Na volta da recursão, se a altura da subárvore direita cresceu...
+        if (*h) {
+            switch ((*pt)->bal) {
+                case -1: // Estava pesado à esquerda, agora fica balanceado
+                    (*pt)->bal = 0;
+                    *h = 0;
+                    break;
+                case 0: // Estava balanceado, agora fica pesado à direita
+                    (*pt)->bal = 1;
+                    *h = 1;
+                    break;
+                case 1: // Estava pesado à direita, agora precisa rebalancear
+                    caso2(pt, h);
+                    break;
+            }
+        }
+    }
+}
+// função de chamada
+s_no* inserir(s_no* raiz, int32_t chave) {
+    int h = 0; // Começa com a flag de altura 'falsa'
+    inserir_recursivo(&raiz, chave, &h);
+    return raiz; // Retorna a raiz (que pode ter mudado)
+}
+
+// função recursiva principal para a remoção
+void remover_recursivo(s_no** pt, int32_t chave, int* h) {
+    // Se o nó não for encontrado
+    if (*pt == NULL) {
+        printf("Chave %d não encontrada para remoção.\n", chave);
+        *h = 0;
+        return; //termina
+    }
+
+    //PROCURA PELO NÓ
+    if (chave < (*pt)->chave) {
+        remover_recursivo(&(*pt)->esq, chave, h);
+        // Na volta da recursão, se a subárvore esquerda encolheu...
+        if (*h) {
+            // Lógica de rebalanceamento para o "crescimento" relativo da direita
+            switch ((*pt)->bal) {
+                case -1: (*pt)->bal = 0; *h = 1; break;
+                case 0:  (*pt)->bal = 1; *h = 0; break;
+                case 1:  caso2(pt, h); break; // Rebalanceia o lado direito
+            }
+        }
+    } else if (chave > (*pt)->chave) {
+        remover_recursivo(&(*pt)->dir, chave, h);
+        // Na volta da recursão, se a subárvore direita encolheu...
+        if (*h) {
+            // Lógica de rebalanceamento para o "crescimento" relativo da esquerda
+            switch ((*pt)->bal) {
+                case 1:  (*pt)->bal = 0; *h = 1; break;
+                case 0:  (*pt)->bal = -1; *h = 0; break;
+                case -1: caso1(pt, h); break; // Rebalanceia o lado esquerdo
+            }
+        }
+    }
+    //NÓ ENCONTRADO - EXECUTA A REMOÇÃO
+    else {
+        s_no* aux = *pt;
+        // Caso com 0 ou 1 filho (à direita)
+        if (aux->esq == NULL) {
+            *pt = aux->dir;
+            *h = 1; // A árvore encolheu
+            free(aux);
+        }
+        // Caso com 1 filho (à esquerda)
+        else if (aux->dir == NULL) {
+            *pt = aux->esq;
+            *h = 1; // A árvore encolheu
+            free(aux);
+        }
+        // Caso com 2 filhos
         else {
-            printf("Rotação Esquerda-Direita (LR) em torno do novo nó %d\n", no->chave);
-            no->esq = rotacaoEsquerda(no->esq);
-            return rotacaoDireita(no);
+            // Encontra o sucessor (menor nó da subárvore direita)
+            s_no* sucessor = aux->dir;
+            while (sucessor->esq != NULL) {
+                sucessor = sucessor->esq;
+            }
+            // Copia a chave do sucessor para o nó atual
+            aux->chave = sucessor->chave;
+            // Remove o nó sucessor da subárvore direita
+            remover_recursivo(&aux->dir, sucessor->chave, h);
+            // Na volta, se a subárvore direita encolheu, rebalanceia
+            if (*h) {
+                 switch ((*pt)->bal) {
+                    case 1:  (*pt)->bal = 0; *h = 1; break;
+                    case 0:  (*pt)->bal = -1; *h = 0; break;
+                    case -1: caso1(pt, h); break;
+                }
+            }
         }
     }
+}
 
-    if (balanco > -1) {
-        if(obterBalanceamento(no->dir) >= 0) {
-            printf("Rotação Esquerda (RR) em torno do novo nó %d\n", no->chave);
-            return rotacaoEsquerda(no);
-        }
-        else {
-            printf("Rotação Direita-Esquerda (RL) em torno do novo nó %d\n", no->chave);
-            no->dir = rotacaoDireita(no->dir);
-            return rotacaoEsquerda(no);
-        }
-    }
-
-    // Retorna o ponteiro do nó (sem mudanças se estava balanceado ou não)
-    return no;
+// Função "wrapper" para ser chamada pelo main.c
+s_no* remover(s_no* raiz, int32_t chave) {
+    int h = 0; // Flag que indica se a altura da subárvore diminuiu
+    remover_recursivo(&raiz, chave, &h);
+    return raiz;
 }
 
 s_no* encontrarNoMenor(s_no* no) {
@@ -159,74 +274,6 @@ s_no* encontrarNoMenor(s_no* no) {
     while (atual && atual->esq != NULL)
         atual = atual->esq;
     return atual;
-}
-
-// operação de remoção - 5
-s_no* remover(s_no* raiz, int32_t chave) {
-    if (raiz == NULL) return NULL;
-
-    if(chave < raiz->chave) {
-        raiz->esq = remover(raiz->esq, chave);
-    } else if (chave > raiz->chave) {
-        raiz->dir = remover(raiz->dir, chave);
-    } else {
-        if (raiz->esq == NULL) {
-            s_no* temp = raiz->dir;
-            free(raiz);
-            return temp;
-        } else if (raiz->dir == NULL) {
-            s_no* temp = raiz->esq;
-            free(raiz);
-            return temp;
-        }
-
-        // nó com dois filhos: pega o sucessor em ordem (o menor da subárvore direita)
-        s_no* temp = encontrarNoMenor(raiz->dir);
-
-        // Copia o conteudo do sucessor para este nó
-        raiz->chave = temp->chave;
-
-        // remove o sucessor
-        raiz->dir = remover(raiz->dir, temp->chave);
-    }
-    if(raiz == NULL)
-        return raiz;
-
-    // Atualiza o fator de balanceamento do nó atual
-    raiz->bal = obterBalanceamento(raiz);
-    int balanco = raiz->bal;
-
-    // Verifica se o nó fica desbalanceado e executa as rotações
-    //Caso pesado à Direita (balanco > 1)
-    if(balanco > 1 ) {
-        // Caso Direita-Direita (RR)
-        if(obterBalanceamento(raiz->dir) >= 0) {
-            printf("Rotação Esquerda (RR) na remoção do nó %d\n", raiz->chave);
-            return rotacaoEsquerda(raiz);
-        }
-        // Caso Direita-Esqurda (RL)
-        else {
-            printf("Rotação Direita (RL) na remoção do nó %d\n", raiz->chave);
-            raiz->dir = rotacaoDireita(raiz->dir);
-            return rotacaoEsquerda(raiz);
-        }
-    }
-
-    if (balanco < -1) {
-        // Caso Esquerda-Esquerda (LL)
-        if(obterBalanceamento(raiz->esq) <= 0) {
-            printf("Rotação Direita (LL) na remoção do nó %d\n", raiz->chave);
-            return rotacaoDireita(raiz);
-        }
-        //Caso Esquerda-Direita (LR)
-        else {
-            printf("Rotação Esquerda-Direita (LR) na remoção do nó %d\n", raiz->chave);
-            raiz->esq = rotacaoEsquerda(raiz->esq);
-            return rotacaoDireita(raiz);
-        }
-    }
-
-    return raiz;
 }
 
 // encontrar o menor elemento da arvore - 3
@@ -366,7 +413,7 @@ void imprimirEmOrdem(s_no* raiz) {
     imprimirEmOrdem(raiz->dir);
 }
 
-// cansei, op. bla bla bla, imprimi em pós ordem ao usuário.
+// imprimi em pós ordem ao usuário.
 void imprimirPosOrdem(s_no* raiz) {
     if (raiz == NULL) return;
     imprimirPosOrdem(raiz->esq);

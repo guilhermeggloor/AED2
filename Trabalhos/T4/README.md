@@ -1,4 +1,4 @@
-# 🌲 Árvore Binária de Busca em C
+# 🌲 Árvore AVL em C
 
 # Feito por: Guilherme Garcia Gloor
 
@@ -13,12 +13,13 @@
 ├── Makefile # Automação da compilação
 └── README.md # Este arquivo
 
-Este Trabalho implementa uma Árvore Binária de Busca e simula sua estrutura de forma textual no terminal
+Este Trabalho implementa uma Árvore AVL e simula sua estrutura de forma textual no terminal
 
 O projeto consta com:
 
 - Operação de inserção
 - Busca de valores
+- Operação de Remoção com Rebalanceamento
 - impressão em pré-ordem, em ordem e pós-ordem
 - Ao sair a Arvore Salva e carrega em um arquivo binário
 - Interface via terminal
