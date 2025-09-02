@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "arvoreAVL.h"
+#include "print-avl.h"
 
 #define ARQUIVO_BINARIO "arvore.bin"
 
@@ -11,6 +12,9 @@ int main()
 
     // carrega o arquivo binario na raiz
     raiz = carregarArvoreBin(ARQUIVO_BINARIO);
+
+    printf("Arvore Carregada no arquivo. Pressione qualquer tecla pra continuar...");
+    imprime_arvore(raiz);
 
     do {
         printf("\nArvore AVL:\n ");
@@ -30,6 +34,7 @@ int main()
                 printf("Digite o valor a inserir: ");
                 scanf("%d", &valor);
                 raiz = inserir(raiz, valor);
+                imprime_arvore(raiz);
                 break;
 
             case 2:
@@ -39,6 +44,9 @@ int main()
                     printf("Valor %d encontrado.\n", valor);
                 else
                     printf("Valor %d não encontrado.\n", valor);
+                printf("Pressione qualquer tecla pra continuar...");
+                getchar();
+                getchar();
                 break;
             case 3: {
                 if(raiz == NULL) {
@@ -47,6 +55,8 @@ int main()
                     int32_t menor = encontrarMenor(raiz);
                     printf("Menor valor: %d\n", menor);
                 }
+                printf("Pressione qualquer tecla para continuar...\n");
+                getchar(); getchar();
                 break;
             }
             case 4: {
@@ -56,31 +66,40 @@ int main()
                     int32_t maior = encontrarMaior(raiz);
                     printf("Maior valor: %d\n", maior);
                 }
+                printf("Pressione qualquer tecla para continuar...\n");
+                getchar(); getchar();
                 break;
             }
             case 5:
                 printf("Digite o valor a remover: ");
                 scanf("%d", &valor);
                 raiz = remover(raiz, valor);
+                imprime_arvore(raiz);
                 break;
             case 6:
-            // impressão em pré ordem, em ordem e pós-ordem
+            // impressão em pré ordem, em ordem e pós-ordem em modo texto
+                printf("Impressão em modo texto:\n ");
                 printf("Pré-ordem: ");
                 imprimirPreOrdem(raiz);
                 printf("\nEm Ordem: ");
                 imprimirEmOrdem(raiz);
                 printf("\nPós-ordem: ");
                 imprimirPosOrdem(raiz);
-                printf("\n");
+                printf("\n\nPressione qualquer tecla para ver a impressão gráfica...\n");
+                getchar(); getchar();
+                imprime_arvore(raiz);
                 break;
             case 7:
             // ao sair grava e salva o arquivo da arvore em formato binario
                 salvarArvore(raiz, ARQUIVO_BINARIO);
                 liberarArvore(raiz);
+                printf("Arvore salva, saindo...\n");
                 break;
 
             default:
                 printf("Opção invalida!\n");
+                printf("Pressione qualquer tecla para continuar...\n");
+                getchar(); getchar();
         }
     }while (opcao != 7);
 
