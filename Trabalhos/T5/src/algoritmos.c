@@ -46,14 +46,35 @@ void bubble_sort_improved(int32_t* array, int size) {
         }
 
         // se no final do laço interno nenhuma troca ocorre, o vetor ta ordenado
-        if (swapped = 0) {
+        if (swapped == 0) {
             break;
         }
     }
  }
- 
-void insertion_sort(int32_t* array, int size) { /* TODO */ }
-void merge_sort(int32_t* array, int size) { /* TODO */ }
+
+void insertion_sort(int32_t* array, int size) { 
+    if (size < 2) {
+        return;
+    }
+
+    for (int i = 1; i < size; i++) {
+        int32_t key = array[i]; //chave inserida
+        int j = i-1;
+
+        // move elementos do subarray que são maiores que a chave para uma posição a frente de sua posição atual
+        while (j >= 0 && array[j] > key) {
+            array[j+1] = array[j];
+            j = j -1;
+        }
+        //insere a chave na posição correta
+        array[j + 1] = key;
+    }
+}
+
+// Implemntação da função de chamada do merge sort 
+void merge_sort(int32_t* array, int size) { 
+
+}
 void quick_sort_last(int32_t* array, int size) { /* TODO */ }
 void quick_sort_random(int32_t* array, int size) { /* TODO */ }
 void quick_sort_median3(int32_t* array, int size) { /* TODO */ }
